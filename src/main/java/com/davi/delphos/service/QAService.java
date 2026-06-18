@@ -95,7 +95,7 @@ public class QAService {
 
         SistemaQA sistemaEncontrado = sistemaOpt.get();
 
-        Optional<VersaoQA> versaoOpt = sistemaEncontrado.buscarVersao(nomeSistema);
+        Optional<VersaoQA> versaoOpt = sistemaEncontrado.buscarVersao(versao);
         if (versaoOpt.isEmpty()) {
             return sistemas;
         }
