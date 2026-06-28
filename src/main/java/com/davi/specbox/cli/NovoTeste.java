@@ -1,13 +1,10 @@
 package com.davi.specbox.cli;
 
 import com.davi.specbox.io.LeitorConsole;
-import com.davi.specbox.model.Sistemas;
-import com.davi.specbox.model.Testes;
-import com.davi.specbox.model.Versoes;
+import com.davi.specbox.model.*;
 import com.davi.specbox.service.SpecBoxService;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class NovoTeste implements Comando {
 
@@ -25,39 +22,50 @@ public class NovoTeste implements Comando {
     }
 
     @Override
-    public void executar(Scanner scanner) {
-        List<Sistemas> sistemasList = service.carregarSistemas();
+    public void executar() {
+        List<Sistema> sistemaList = service.carregarSistemas();
 
-        if (sistemasList.isEmpty()) {
-            System.out.println("Nenhum sistema cadastrado ainda. Cadastre um sistema primeiro");
+        if (sistemaList.isEmpty()) {
+            System.out.println("Nenhum sistema cadastrado ainda.\nCadastre um sistema primeiro.");
             return;
         }
+        System.out.println("======== Registro de Teste ==========");
+        Sistema sistemaEscolhido = leitor.escolherDaLista(" Selecione um sistema da lista abaixo", sistemaList, Sistema::getNome);
+        List<Versao> versaoDisponiveis = sistemaEscolhido.getVersoes();
 
-        Sistemas sistemaEscolhido = leitor.escolherDaLista("Selecione o sistema", sistemasList, Sistemas::getNome);
-        List<Versoes> versoesDisponiveis = sistemaEscolhido.getVersoes();
-
-        if (versoesDisponiveis.isEmpty()) {
-            System.out.println("Nenhuma versão cadastrada ainda. Cadastre uma primeiro");
+        if (versaoDisponiveis.isEmpty()) {
+            System.out.println("Nenhuma versão cadastrada ainda.\nCadastre uma primeiro.");
             return;
         }
-        Versoes versaoEscolhida = leitor.escolherDaLista("Selecione a versão", versoesDisponiveis, Versoes::getVersao);
+        System.out.println("=====================================");
+        Versao versaoEscolhida = leitor.escolherDaLista(" Selecione uma versão da lista abaixo", versaoDisponiveis, Versao::getVersao);
 
-        System.out.println("Registrando novo teste na versão" + versaoEscolhida.getVersao());
-
+        System.out.println("=====================================");
+        System.out.println("Informações do Teste");
+        System.out.println("Versão " + versaoEscolhida.getVersao());
+        System.out.println("=====================================");
         String titulo = leitor.lerTexto("Título:", true);
-        Testes teste = new Testes(titulo);
+        Teste teste = new Teste(titulo);
 
-        teste.setProcedimento(leitor.lerTexto("Procedimento realizado:", false));
-        teste.setRetorno(leitor.lerTexto("Retorno obtido:", false));
-        teste.setPrioridade(leitor.lerEnum("Prioridade:", Testes.Prioridade.class ));
-        teste.setFrequencia(leitor.lerEnum("Frequência:", Testes.Frequencia.class));
-        teste.setAmbiente(leitor.lerEnum("Ambiente:", Testes.Ambiente.class ));
-        teste.setResultado(leitor.lerEnum("Resultado", Testes.Resultado.class));
+        System.out.println("=====================================");
+        teste.setProcedimento(leitor.lerTexto("Procedimento:", false));
+        System.out.println("=====================================");
+        teste.setRetorno(leitor.lerTexto("Retorno:", false));
+        System.out.println("=====================================");
+        teste.setResultado(leitor.lerEnum("Resultado", Resultado.class, Resultado::getDescricao));
+        System.out.println("=====================================");
+        teste.setPrioridade(leitor.lerEnum("Prioridade:", Prioridade.class, Prioridade::getDescricao));
+        System.out.println("=====================================");
+        teste.setFrequencia(leitor.lerEnum("Frequência:", Frequencia.class, Frequencia::getDescricao));
+        System.out.println("=====================================");
+        teste.setAmbiente(leitor.lerEnum("Ambiente:", Ambiente.class, Ambiente::getDescricao ));
+        System.out.println("=====================================");
         teste.setResponsavel(leitor.lerTexto("Responsável:", false));
+        System.out.println("=====================================");
         teste.setObs(leitor.lerTexto("Observações:", false));
 
         versaoEscolhida.adicionarTeste(teste);
-        service.salvarSistemas(sistemasList);
+        service.salvarSistemas(sistemaList);
 
         System.out.println("Novo teste registrado na versão " + versaoEscolhida.getVersao());
     }

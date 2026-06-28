@@ -1,8 +1,8 @@
 package com.davi.specbox.service;
 
-import com.davi.specbox.model.Sistemas;
-import com.davi.specbox.model.Testes;
-import com.davi.specbox.model.Versoes;
+import com.davi.specbox.model.Sistema;
+import com.davi.specbox.model.Teste;
+import com.davi.specbox.model.Versao;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -23,7 +23,7 @@ public class SpecBoxService {
     private static final Path ARQUIVO = PASTA.resolve("specbox_testes.json");
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public void salvarSistemas(List<Sistemas> sistemas) {
+    public void salvarSistemas(List<Sistema> sistemas) {
         try {
             Files.createDirectories(PASTA);
             try (BufferedWriter escritor = Files.newBufferedWriter(ARQUIVO, UTF_8)) {
@@ -34,10 +34,10 @@ public class SpecBoxService {
         }
     }
 
-    public List<Sistemas> carregarSistemas() {
+    public List<Sistema> carregarSistemas() {
         if (Files.exists(ARQUIVO)) {
             try (BufferedReader ler = Files.newBufferedReader(ARQUIVO, UTF_8)) {
-                List<Sistemas> sistemas = gson.fromJson(ler, new TypeToken<List<Sistemas>>() {
+                List<Sistema> sistemas = gson.fromJson(ler, new TypeToken<List<Sistema>>() {
                         }.getType()
                 );
 
@@ -50,7 +50,7 @@ public class SpecBoxService {
         return new ArrayList<>();
     }
 
-    public List<Sistemas> salvarTeste(List<Sistemas> sistemas, String nomeSistema, String versao, Testes
+    public List<Sistema> salvarTeste(List<Sistema> sistemas, String nomeSistema, String versao, Teste
             teste) throws IOException {
 
         if (nomeSistema == null || nomeSistema.isBlank()) {
@@ -60,23 +60,23 @@ public class SpecBoxService {
             throw new IllegalArgumentException("Versão inválida");
         }
 
-        Sistemas sistemaOpt = sistemas.stream()
+        Sistema sistemaOpt = sistemas.stream()
                 .filter(s -> s.getNome().equalsIgnoreCase(nomeSistema))
                 .findFirst()
                 .orElseGet(() -> {
-                    Sistemas sistemaNovo = new Sistemas(nomeSistema);
+                    Sistema sistemaNovo = new Sistema(nomeSistema);
                     sistemas.add(sistemaNovo);
                     return sistemaNovo;
                 });
 
-        Versoes versaoOpt = sistemaOpt.buscarVersao(versao)
+        Versao versaoOpt = sistemaOpt.buscarVersao(versao)
                 .orElseGet(() -> {
-                    Versoes versaoNova = new Versoes(versao);
+                    Versao versaoNova = new Versao(versao);
                     sistemaOpt.adicionarVersao(versaoNova);
                     return versaoNova;
                 });
 
-        Optional<Testes> existe = versaoOpt.buscarTeste(teste.getId());
+        Optional<Teste> existe = versaoOpt.buscarTeste(teste.getId());
         if (existe.isPresent()) {
             versaoOpt.removerTeste(teste.getId());
             teste.atualizarDataEdicao();
@@ -86,9 +86,9 @@ public class SpecBoxService {
         return sistemas;
     }
 
-    public List<Sistemas> excluirTeste(List<Sistemas> sistemas, String nomeSistema, String versao, String idTeste) throws IOException {
+    public List<Sistema> excluirTeste(List<Sistema> sistemas, String nomeSistema, String versao, String idTeste) throws IOException {
 
-        Optional<Sistemas> sistemaOpt = sistemas.stream()
+        Optional<Sistema> sistemaOpt = sistemas.stream()
                 .filter(s -> s.getNome().equalsIgnoreCase(nomeSistema))
                 .findFirst();
 
@@ -96,13 +96,13 @@ public class SpecBoxService {
             return sistemas;
         }
 
-        Sistemas sistemaEncontrado = sistemaOpt.get();
+        Sistema sistemaEncontrado = sistemaOpt.get();
 
-        Optional<Versoes> versaoOpt = sistemaEncontrado.buscarVersao(versao);
+        Optional<Versao> versaoOpt = sistemaEncontrado.buscarVersao(versao);
         if (versaoOpt.isEmpty()) {
             return sistemas;
         }
-        Versoes versaoEncontrada = versaoOpt.get();
+        Versao versaoEncontrada = versaoOpt.get();
         versaoEncontrada.removerTeste(idTeste);
 
         if (versaoEncontrada.getTestes().isEmpty()) {

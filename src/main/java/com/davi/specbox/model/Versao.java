@@ -5,26 +5,26 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Versoes {
+public class Versao {
     private String versao;
-    private List<Testes> listaTestes;
+    private List<Teste> listaTestes;
 
-    public Versoes(String versao) {
+    public Versao(String versao) {
         this.versao = versao;
         listaTestes = new ArrayList<>();
     }
 
-    public void adicionarTeste(Testes teste) {
+    public void adicionarTeste(Teste teste) {
         if (teste != null) {
             listaTestes.add(teste);
         }
     }
 
     public void removerTeste(String id) {
-        listaTestes.removeIf(testes -> testes.getId().equals(id));
+        listaTestes.removeIf(teste -> teste.getId().equals(id));
     }
 
-    public Optional<Testes> buscarTeste(String id) {
+    public Optional<Teste> buscarTeste(String id) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("ID inválido");
         }
@@ -47,11 +47,11 @@ public class Versoes {
         this.versao = versao;
     }
 
-    public List<Testes> getTestes() {
+    public List<Teste> getTestes() {
         return listaTestes;
     }
 
-    public void setTestes(List<Testes> testes) {
+    public void setTestes(List<Teste> testes) {
         this.listaTestes = testes;
     }
 }

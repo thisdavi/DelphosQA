@@ -4,22 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class Testes {
-    public enum Resultado {
-        APROVADO, REPROVADO, PARCIAL
-    }
-
-    public enum Frequencia {
-        SEMPRE, AS_VEZES, RARAMENTE, UMA_VEZ
-    }
-
-    public enum Prioridade {
-        CRITICA, ALTA, MEDIA, BAIXA
-    }
-
-    public enum Ambiente {
-        PRODUCAO, HOMOLOGACAO, DESENVOLVIMENTO
-    }
+public class Teste {
 
     private final String id;
     private String titulo;
@@ -34,29 +19,10 @@ public class Testes {
     private final String dataCriacao;
     private String dataEdicao;
 
-    public Testes(String titulo) {
+    public Teste(String titulo) {
         id = UUID.randomUUID().toString();
         this.titulo = titulo;
         dataCriacao = getDataFormatada();
-    }
-
-    public String getResultadoFormatado(){
-        if (resultado == null) return "-";
-        return switch (resultado){
-            case APROVADO  -> "\uD83D\uDFE2 Aprovado";
-            case REPROVADO -> "\uD83D\uDD34 Reprovado";
-            case PARCIAL   -> "\uD83D\uDFE0 Parcial";
-        };
-    }
-
-    public String getFrequenciaFormatada(){
-        if (frequencia == null) return "-";
-        return switch (frequencia){
-            case SEMPRE    -> "Sempre";
-            case AS_VEZES  -> "Às vezes";
-            case RARAMENTE -> "Raramente";
-            case UMA_VEZ   -> "Uma vez";
-        };
     }
 
     private String getDataFormatada() {

@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class Sistemas {
+public class Sistema {
     private String nome;
-    private List<Versoes> versoes;
+    private List<Versao> versoes;
 
-    public Sistemas(String nome) {
+    public Sistema(String nome) {
         this.nome = nome;
         versoes = new ArrayList<>();
     }
 
-    public void adicionarVersao(Versoes versao) {
+    public void adicionarVersao(Versao versao) {
         if (versao != null) {
             versoes.add(versao);
         }
@@ -23,7 +23,7 @@ public class Sistemas {
         versoes.removeIf(versao -> versao.getVersao().equalsIgnoreCase(nomeVersao));
     }
 
-    public Optional<Versoes> buscarVersao(String versao) {
+    public Optional<Versao> buscarVersao(String versao) {
         if (versao == null || versao.isBlank()) {
             throw new IllegalArgumentException("Versão inválida");
         }
@@ -38,11 +38,11 @@ public class Sistemas {
         return nome;
     }
 
-    public List<Versoes> getVersoes() {
+    public List<Versao> getVersoes() {
         return versoes;
     }
 
-    public void setVersoes(List<Versoes> versoes) {
+    public void setVersoes(List<Versao> versoes) {
         this.versoes = versoes;
     }
 

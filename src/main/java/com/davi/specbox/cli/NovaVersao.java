@@ -1,12 +1,11 @@
 package com.davi.specbox.cli;
 
 import com.davi.specbox.io.LeitorConsole;
-import com.davi.specbox.model.Sistemas;
-import com.davi.specbox.model.Versoes;
+import com.davi.specbox.model.Sistema;
+import com.davi.specbox.model.Versao;
 import com.davi.specbox.service.SpecBoxService;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class NovaVersao implements Comando {
 
@@ -20,33 +19,34 @@ public class NovaVersao implements Comando {
 
     @Override
     public String getDescricao() {
-        return "Cadastrar nova versão";
+        return "Registrar nova versão";
     }
 
     @Override
-    public void executar(Scanner scanner) {
-        List<Sistemas> sistemasList = service.carregarSistemas();
-        if (sistemasList.isEmpty()) {
-            System.out.println("Nenhum sistema cadastrado ainda. Cadastre um sistema primeiro");
+    public void executar() {
+        List<Sistema> sistemaList = service.carregarSistemas();
+        if (sistemaList.isEmpty()) {
+            System.out.println("Nenhum sistema cadastrado ainda.\nCadastre um sistema primeiro.");
             return;
         }
 
-        Sistemas sistemaEscolhido = leitor.escolherDaLista("Selecione o sistema:", sistemasList, Sistemas::getNome);
-        System.out.print("Cadastrando nova versão para o sistema: " + sistemaEscolhido.getNome());
-        String nomeVersao = leitor.lerTexto("Versão:", true);
+        System.out.println("======== Registro de Versão =========");
+        Sistema sistemaEscolhido = leitor.escolherDaLista(" Selecione um sistema da lista abaixo", sistemaList, Sistema::getNome);
+        System.out.println("Sistema: " + sistemaEscolhido.getNome());
+        String nomeVersao = leitor.lerTexto("Versão: ", true);
 
-        List<Versoes> versoes = sistemaEscolhido.getVersoes();
+        List<Versao> versoes = sistemaEscolhido.getVersoes();
 
         boolean jaExiste = versoes.stream()
                 .anyMatch(v -> v.getVersao().equalsIgnoreCase(nomeVersao));
 
         if (jaExiste) {
-            System.out.print("O Sistema \"" + sistemaEscolhido.getNome() + "\" já possui a versão" + "\"" + nomeVersao + "\" cadastrada");
+            System.out.println("Versão " + "\"" + nomeVersao + "\" já cadastrada anteriormente.");
             return;
         }
 
-        sistemaEscolhido.adicionarVersao(new Versoes(nomeVersao));
-        service.salvarSistemas(sistemasList);
+        sistemaEscolhido.adicionarVersao(new Versao(nomeVersao));
+        service.salvarSistemas(sistemaList);
         System.out.println("Versão \"" + nomeVersao + "\" cadastrada com sucesso!");
     }
 }
