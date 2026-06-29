@@ -50,6 +50,7 @@ public class SpecBoxService {
         return new ArrayList<>();
     }
 
+
     public List<Sistema> salvarTeste(List<Sistema> sistemas, String nomeSistema, String versao, Teste
             teste) throws IOException {
 
@@ -86,7 +87,7 @@ public class SpecBoxService {
         return sistemas;
     }
 
-    public List<Sistema> excluirTeste(List<Sistema> sistemas, String nomeSistema, String versao, String idTeste) throws IOException {
+    public List<Sistema> excluirTeste(List<Sistema> sistemas, String nomeSistema, String versao, String idTeste) {
 
         Optional<Sistema> sistemaOpt = sistemas.stream()
                 .filter(s -> s.getNome().equalsIgnoreCase(nomeSistema))
@@ -105,15 +106,22 @@ public class SpecBoxService {
         Versao versaoEncontrada = versaoOpt.get();
         versaoEncontrada.removerTeste(idTeste);
 
-        if (versaoEncontrada.getTestes().isEmpty()) {
-            sistemaEncontrado.removerVersao(versaoEncontrada.getVersao());
-        }
-
-        if (sistemaEncontrado.getVersoes().isEmpty()) {
-            sistemas.removeIf(s -> s.getNome().equalsIgnoreCase(nomeSistema));
-        }
-
         salvarSistemas(sistemas);
         return sistemas;
+    }
+
+    public void excluirSistema(List<Sistema> sistemas, String nomeSistema) {
+        sistemas.removeIf(s -> s.getNome().equalsIgnoreCase(nomeSistema));
+        salvarSistemas(sistemas);
+    }
+
+    public void excluirVersao(List<Sistema> sistemas, String nomeSistema, String versao) {
+        sistemas.stream()
+                .filter(s -> s.getNome().equalsIgnoreCase(nomeSistema))
+                .findFirst()
+                .ifPresent(sistema -> {
+                    sistema.removerVersao(versao);
+                    salvarSistemas(sistemas);
+                });
     }
 }

@@ -64,9 +64,11 @@ public class LeitorConsole {
 
     public boolean confirmar(String pergunta) {
         while (true) {
-            System.out.print(pergunta + "(s/n): ");
+            System.out.println(pergunta +"\n's' para sim / 'n' para não");
+            System.out.println("=====================================");
+            System.out.print("> ");
             String resposta = entrada.nextLine().trim().toLowerCase();
-
+            System.out.println("=====================================");
             if (resposta.equals("s")) return true;
             if (resposta.equals("n")) return false;
 

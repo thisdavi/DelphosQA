@@ -32,6 +32,7 @@ public class NovaVersao implements Comando {
 
         System.out.println("======== Registro de Versão =========");
         Sistema sistemaEscolhido = leitor.escolherDaLista(" Selecione um sistema da lista abaixo", sistemaList, Sistema::getNome);
+        System.out.println("=====================================");
         System.out.println("Sistema: " + sistemaEscolhido.getNome());
         String nomeVersao = leitor.lerTexto("Versão: ", true);
 
