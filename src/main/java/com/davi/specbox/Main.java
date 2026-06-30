@@ -16,6 +16,7 @@ public class Main {
 
         SubMenu menuVersoes = new SubMenu("Versões", leitor);
         menuVersoes.registrar(new NovaVersao(service, leitor));
+        menuVersoes.registrar(new ListarVersoes(service, leitor));
         menuVersoes.registrar(new ExcluirVersao(service, leitor));
 
         SubMenu menuTestes = new SubMenu("Teste", leitor);

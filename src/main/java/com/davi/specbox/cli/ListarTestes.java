@@ -30,7 +30,20 @@ public class ListarTestes implements Comando {
             return;
         }
 
-        System.out.println("====== Visualização de Testes =======");
+        System.out.println("======== Listagem de Testes =========");
+        System.out.println("Selecione o tipo de listagem: ");
+        System.out.println("1. Listar todos os testes");
+        System.out.println("2. Listar apenas um teste");
+        System.out.println("=====================================");
+        int opcao = leitor.lerInteiro("> ", 1, 2);
+
+        switch (opcao) {
+            case 1 -> listagemGeral(sistemaList);
+            case 2 -> listagemUnica(sistemaList);
+        }
+    }
+
+    private void listagemGeral(List<Sistema> sistemaList) {
         Sistema sistemaEscolhido = leitor.escolherDaLista("Selecione um sistema da lista abaixo:", sistemaList, Sistema::getNome);
         List<Versao> versaoDisponiveis = sistemaEscolhido.getVersoes();
 
@@ -38,10 +51,32 @@ public class ListarTestes implements Comando {
             System.out.println("Nenhuma versão cadastrada para este sistema.");
             return;
         }
+        System.out.println("=====================================");
+        Versao versaoEscolhida = leitor.escolherDaLista("Selecione uma versão da lista abaixo:", versaoDisponiveis, Versao::getVersao);
+        System.out.println("=====================================");
+        List<Teste> testes = versaoEscolhida.getTestes();
 
+        if (testes.isEmpty()) {
+            System.out.println("Nenhum teste registrado para esta versão.");
+            return;
+        }
+        for (Teste teste : testes) {
+           exibirDetalhes(teste);
+        }
+    }
+
+    private void listagemUnica(List<Sistema> sistemaList) {
+        Sistema sistemaEscolhido = leitor.escolherDaLista("Selecione um sistema da lista abaixo:", sistemaList, Sistema::getNome);
+        List<Versao> versaoDisponiveis = sistemaEscolhido.getVersoes();
+
+        if (versaoDisponiveis.isEmpty()) {
+            System.out.println("Nenhuma versão cadastrada para este sistema.");
+            return;
+        }
         System.out.println("=====================================");
         Versao versaoEscolhida = leitor.escolherDaLista("Selecione uma versão da lista abaixo:", versaoDisponiveis, Versao::getVersao);
         List<Teste> testes = versaoEscolhida.getTestes();
+
 
         if (testes.isEmpty()) {
             System.out.println("Nenhum teste registrado para esta versão.");
@@ -64,12 +99,13 @@ public class ListarTestes implements Comando {
                 break;
             }
 
-            Teste testeEscolhido = testes.get(escolha - 1);
-            exibirDetalhesTeste(testeEscolhido);
+            Teste teste = testes.get(escolha - 1);
+            exibirDetalhes(teste);
+            leitor.lerTexto("Pressione Enter para continuar...", false);
         }
     }
 
-    private void exibirDetalhesTeste(Teste teste) {
+    private void exibirDetalhes(Teste teste){
         System.out.println("\n================ Detalhes do Teste ================");
         System.out.println("ID:          " + teste.getId());
         System.out.println("Título:      " + teste.getTitulo());
@@ -84,6 +120,5 @@ public class ListarTestes implements Comando {
         System.out.println("Criado em:   " + teste.getDataCriacao());
         System.out.println("Editado em:  " + (teste.getDataEdicao() != null ? teste.getDataEdicao() : "-"));
         System.out.println("===================================================\n");
-        leitor.lerTexto("Pressione Enter para continuar...", false);
     }
 }
